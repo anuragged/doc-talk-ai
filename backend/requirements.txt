@@ -1,0 +1,17 @@
+Django>=5.0,<6.0
+djangorestframework
+django-cors-headers
+djoser
+django-storages[boto3]
+langchain
+langchain-community
+langchain-google-genai
+google-generativeai
+langchain-text-splitters
+pypdf
+python-docx
+psycopg2-binary
+pgvector
+Pillow
+python-dotenv
+gunicorn
