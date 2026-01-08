@@ -1,6 +1,7 @@
 # File-Chat RAG Chatbot - End to End Walkthrough
 
 This application allows you to upload documents (PDF, DOCX, TXT, Images), and a smart AI assistant will answer your questions based on those files.
+Demo Video: https://drive.google.com/file/d/1KCmzyED0oZO2loNsBzJbEKfECLDE6J4R/view?usp=sharing
 
 ## Project Structure
 - **Frontend**: React + TypeScript + Vite (Port 5173)
