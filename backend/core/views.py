@@ -59,25 +59,33 @@ class ChatSessionViewSet(viewsets.ModelViewSet):
     def send_message(self, request, pk=None):
         session = self.get_object()
         user_message_content = request.data.get('message')
-        doc_ids = request.data.get('doc_ids') # Optional list of IDs
+        doc_ids = request.data.get('doc_ids')
         
         if not user_message_content:
             return Response({"error": "Message content is required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        # 1. Save User Message
+        # 1. Fetch recent chat history for context
+        recent_messages = session.messages.order_by('-created_at')[:5]
+        history = [{"role": m.role, "content": m.content} for m in reversed(recent_messages)]
+        history_text = "\n".join([f"{m['role']}: {m['content']}" for m in history])
+
+        # 2. Rephrase query for better retrieval if history exists
+        standalone_query = rag.rephrase_query_with_history(user_message_content, history_text)
+
+        # 3. Save User Message
         user_msg = ChatMessage.objects.create(
             session=session,
             role='user',
             content=user_message_content
         )
 
-        # 2. Retrieve Context
-        relevant_chunks = rag.get_relevant_chunks(user_message_content, request.user, doc_ids=doc_ids)
+        # 4. Retrieve Context using standalone query
+        relevant_chunks = rag.get_relevant_chunks(standalone_query, request.user, doc_ids=doc_ids)
 
-        # 3. Generate Answer
-        answer = rag.generate_rag_response(user_message_content, relevant_chunks)
+        # 5. Generate Answer using original query + context + history
+        answer = rag.generate_rag_response(user_message_content, relevant_chunks, chat_history=history)
 
-        # 4. Save AI Message
+        # 6. Save AI Message
         ai_msg = ChatMessage.objects.create(
             session=session,
             role='ai',

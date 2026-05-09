@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { LogIn, User, Lock } from 'lucide-react';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
         try {
             const response = await axios.post('http://localhost:8000/auth/token/login/', {
                 username,
@@ -18,36 +22,87 @@ const Login = () => {
             localStorage.setItem('token', response.data.auth_token);
             navigate('/dashboard');
         } catch (err) {
-            setError('Invalid credentials');
+            setError('Invalid username or password');
             console.error(err);
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
         <div className="auth-container">
-            <div className="card auth-form">
-                <h2 style={{ textAlign: 'center' }}>Login</h2>
-                {error && <p style={{ color: 'var(--error)' }}>{error}</p>}
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <input
-                        type="text"
-                        placeholder="Username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                    <button type="submit" className="btn">Login</button>
+            <div className="card auth-form" style={{ padding: '3rem' }}>
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <div style={{ 
+                        width: '64px', 
+                        height: '64px', 
+                        borderRadius: '16px', 
+                        background: 'rgba(99, 102, 241, 0.1)', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'center',
+                        color: 'var(--primary)',
+                        margin: '0 auto 1.5rem auto'
+                    }}>
+                        <LogIn size={32} />
+                    </div>
+                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, background: 'linear-gradient(to right, #818cf8, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        Welcome Back
+                    </h1>
+                    <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Login to your DocTalk AI account</p>
+                </div>
+
+                {error && (
+                    <div style={{ 
+                        padding: '0.75rem 1rem', 
+                        background: 'rgba(239, 68, 68, 0.1)', 
+                        border: '1px solid rgba(239, 68, 68, 0.2)', 
+                        borderRadius: '12px', 
+                        color: 'var(--error)',
+                        fontSize: '0.9rem',
+                        marginBottom: '1.5rem',
+                        textAlign: 'center'
+                    }}>
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ position: 'relative' }}>
+                        <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                            <User size={18} />
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            required
+                            style={{ width: '100%', paddingLeft: '3rem' }}
+                        />
+                    </div>
+                    <div style={{ position: 'relative' }}>
+                        <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                            <Lock size={18} />
+                        </div>
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            style={{ width: '100%', paddingLeft: '3rem' }}
+                        />
+                    </div>
+                    <button type="submit" className="btn" disabled={loading} style={{ width: '100%', padding: '1rem' }}>
+                        {loading ? 'Signing in...' : 'Sign In'}
+                    </button>
                 </form>
-                <p style={{ textAlign: 'center', color: 'var(--text-dim)' }}>
-                    Don't have an account? <Link to="/register">Register</Link>
-                </p>
+
+                <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.95rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>Don't have an account? </span>
+                    <Link to="/register" style={{ fontWeight: 600 }}>Create account</Link>
+                </div>
             </div>
         </div>
     );
