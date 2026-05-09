@@ -24,6 +24,24 @@ embeddings_model = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004
 # Chat: gemini-2.0-flash is the available model
 llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash")
 
+def rephrase_query_with_history(query, chat_history):
+    """
+    Rephrases the user's query to be a standalone question based on chat history.
+    """
+    if not chat_history:
+        return query
+    
+    rephrase_prompt = f"""Given the following chat history and a follow-up question, rephrase the follow-up question to be a standalone question.
+    
+    Chat History:
+    {chat_history}
+    
+    Follow-up Question: {query}
+    Standalone Question:"""
+    
+    response = llm.invoke([{"role": "user", "content": rephrase_prompt}])
+    return response.content.strip()
+
 def extract_text_from_file(file_path, file_type, file_obj=None):
     """
     Extracts text from PDF, DOCX, or TXT files.
@@ -181,9 +199,9 @@ def get_relevant_chunks(query, user, doc_ids=None, top_k=5):
     
     return relevant_chunks
 
-def generate_rag_response(query, chunks):
+def generate_rag_response(query, chunks, chat_history=None):
     """
-    Generates an answer using GPT-4o-mini grounded in the chunks.
+    Generates an answer using Gemini grounded in the chunks and considering chat history.
     """
     if not chunks:
         return "I could not find any relevant information in your uploaded documents to answer this question."
@@ -192,12 +210,20 @@ def generate_rag_response(query, chunks):
     
     system_prompt = """You are a helpful assistant. Answer the user's question using ONLY the context provided below.
     If the answer is not in the context, say "I don't have enough information to answer that based on the uploaded files."
-    Cite your sources by referencing the document name."""
+    Cite your sources by referencing the document name.
+    Be concise and professional."""
     
     messages = [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": f"Context:\n{context_text}\n\nQuestion: {query}"}
+        {"role": "system", "content": system_prompt}
     ]
+    
+    # Add history if available
+    if chat_history:
+        # Expecting chat_history as a list of dicts with role and content
+        for msg in chat_history[-5:]: # Last 5 messages for context
+            messages.append({"role": msg['role'], "content": msg['content']})
+            
+    messages.append({"role": "user", "content": f"Context:\n{context_text}\n\nQuestion: {query}"})
     
     response = llm.invoke(messages)
     return response.content
