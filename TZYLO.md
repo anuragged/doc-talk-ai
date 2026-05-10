@@ -52,4 +52,6 @@
 <!-- TZYLO:GEN_START -->
 - [PR #1] A new function 'rephrase_query_with_history' has been added to rephrase user queries based on chat history.
 - [PR #1] The 'generate_rag_response' function has been updated to accept chat history and consider it when generating answers.
+- [PR #2] The Chat Interface now features a redesigned header with improved document context display and additional UI components for user engagement.
+- [PR #2] The system prompt for RAG has been updated to provide clearer guidelines for generating responses, enhancing the quality of user answers.
 <!-- TZYLO:GEN_END -->
