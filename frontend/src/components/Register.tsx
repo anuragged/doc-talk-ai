@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import { UserPlus, User, Mail, Lock } from 'lucide-react';
+import { UserPlus, User, Mail, Lock, Sparkles } from 'lucide-react';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -45,46 +45,53 @@ const Register = () => {
 
     return (
         <div className="auth-container">
-            <div className="card auth-form" style={{ padding: '3rem' }}>
-                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <div className="glass-panel auth-form" style={{ padding: '3.5rem', animation: 'fadeIn 0.6s ease-out' }}>
+                <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
                     <div style={{ 
-                        width: '64px', 
-                        height: '64px', 
-                        borderRadius: '16px', 
-                        background: 'rgba(99, 102, 241, 0.1)', 
+                        width: '72px', 
+                        height: '72px', 
+                        borderRadius: '20px', 
+                        background: 'linear-gradient(135deg, var(--secondary), var(--primary))', 
                         display: 'flex', 
                         alignItems: 'center', 
                         justifyContent: 'center',
-                        color: 'var(--primary)',
-                        margin: '0 auto 1.5rem auto'
+                        color: 'white',
+                        margin: '0 auto 2rem auto',
+                        boxShadow: '0 10px 25px var(--primary-glow)',
+                        animation: 'float 4s infinite ease-in-out'
                     }}>
-                        <UserPlus size={32} />
+                        <UserPlus size={36} />
                     </div>
-                    <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, background: 'linear-gradient(to right, #818cf8, #6366f1)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        Create Account
+                    <h1 style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }} className="text-gradient">
+                        Get Started
                     </h1>
-                    <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Start chatting with your documents</p>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Create your DocTalk AI account</p>
                 </div>
 
                 {error && (
                     <div style={{ 
-                        padding: '0.75rem 1rem', 
+                        padding: '1rem', 
                         background: 'rgba(239, 68, 68, 0.1)', 
                         border: '1px solid rgba(239, 68, 68, 0.2)', 
-                        borderRadius: '12px', 
+                        borderRadius: '14px', 
                         color: 'var(--error)',
-                        fontSize: '0.9rem',
-                        marginBottom: '1.5rem',
-                        textAlign: 'center'
+                        fontSize: '0.95rem',
+                        marginBottom: '2rem',
+                        textAlign: 'center',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem'
                     }}>
+                        <Sparkles size={16} />
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div style={{ position: 'relative' }}>
-                        <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-                            <User size={18} />
+                        <div style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                            <User size={20} />
                         </div>
                         <input
                             type="text"
@@ -92,43 +99,46 @@ const Register = () => {
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             required
-                            style={{ width: '100%', paddingLeft: '3rem' }}
+                            className="input-field"
+                            style={{ paddingLeft: '3.5rem' }}
                         />
                     </div>
                     <div style={{ position: 'relative' }}>
-                        <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-                            <Mail size={18} />
+                        <div style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                            <Mail size={20} />
                         </div>
                         <input
                             type="email"
-                            placeholder="Email"
+                            placeholder="Email Address"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
-                            style={{ width: '100%', paddingLeft: '3rem' }}
+                            className="input-field"
+                            style={{ paddingLeft: '3.5rem' }}
                         />
                     </div>
                     <div style={{ position: 'relative' }}>
-                        <div style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
-                            <Lock size={18} />
+                        <div style={{ position: 'absolute', left: '1.25rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>
+                            <Lock size={20} />
                         </div>
                         <input
                             type="password"
-                            placeholder="Password"
+                            placeholder="Create Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            style={{ width: '100%', paddingLeft: '3rem' }}
+                            className="input-field"
+                            style={{ paddingLeft: '3.5rem' }}
                         />
                     </div>
-                    <button type="submit" className="btn" disabled={loading} style={{ width: '100%', padding: '1rem' }}>
-                        {loading ? 'Creating account...' : 'Sign Up'}
+                    <button type="submit" className="btn-primary" disabled={loading} style={{ width: '100%', padding: '1rem', marginTop: '1rem', justifyContent: 'center', fontSize: '1.1rem' }}>
+                        {loading ? 'Creating account...' : 'Create Account'}
                     </button>
                 </form>
 
-                <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.95rem' }}>
+                <div style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '1rem' }}>
                     <span style={{ color: 'var(--text-muted)' }}>Already have an account? </span>
-                    <Link to="/login" style={{ fontWeight: 600 }}>Sign in</Link>
+                    <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 700 }}>Sign in</Link>
                 </div>
             </div>
         </div>
