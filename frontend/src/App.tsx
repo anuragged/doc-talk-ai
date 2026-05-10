@@ -4,6 +4,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import ChatInterface from './components/ChatInterface';
+import MainLayout from './components/MainLayout';
 import './index.css';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -11,7 +12,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   if (!token) {
     return <Navigate to="/login" replace />;
   }
-  return <>{children}</>;
+  return <MainLayout>{children}</MainLayout>;
 };
 
 function App() {
